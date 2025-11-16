@@ -1,23 +1,20 @@
 #include <AFMotor.h>  // motor shield support library so pumps can run
 #include <Wire.h>      // wire library required by the motor shield firmware
 
-// This sketch blends Henry's drink routine with Marty button control using
-// verbose names and comments so each action is easy to follow.
 
-// Marty Combined v2 with start/stop buttons
 const byte STOP_BUTTON_PIN = A14;  // wired stop button that pauses everything
 const byte START_BUTTON_PIN = A15; // wired start button that resumes the cycle
 
-// Motor objects are created with descriptive names so wiring is obvious.
-AF_DCMotor diaphragmPumpMotor(2);
+// Initialize motors and pumps
+AF_DCMotor diaphragmPumpMotor(2); 
 AF_DCMotor peristalticPumpMotor(1);
 AF_DCMotor impellerMotor(4);
 AF_DCMotor pressMotor(3);
 
-const byte RELAY_PIN = 53;     // relay that toggles the external accessory
-const byte STEP_COUNT = 15;    // total number of timed actions in the routine
+const byte RELAY_PIN = 53;     // relay that toggles the submersible pump
+const byte STEP_COUNT = 15;    // total number of steps in the system
 
-// Durations for each numbered step (milliseconds) listed in execution order.
+// Durations for each numbered step (milliseconds) listed in execution order
 const unsigned long stepTime[STEP_COUNT] = {
   10000, // Step 0  - diaphragm pump runs
   0,     // Step 1  - diaphragm pump releases
@@ -67,9 +64,9 @@ void setup() {
 void loop() {
   // Buttons are checked every pass; pressing Stop has priority.
   if (digitalRead(STOP_BUTTON_PIN) == LOW) {
-    stopSystem();                        // halt immediately whenever Stop is low
+    stopSystem();                        // halt immediately whenever Stop is LOW
   } else if (digitalRead(START_BUTTON_PIN) == LOW) {
-    startSystem();                       // resume or begin when Start is low
+    startSystem();                       // resume or begin when Start is LOW
   }
 
   // Advance the routine only when timing allows.
@@ -90,7 +87,7 @@ void startSystem() {
         currentStepIndex = 0;            // move out of idle so first step runs
       }
       Serial.println("System starting.");
-      enterStep(currentStepIndex);       // begin step timer and hardware action
+      enterStep(currentStepIndex);       // begin step timer and hardware actions
     } else {
       // Recreate the partially completed timer so the step finishes naturally.
       stepStartTime = millis() - pausedElapsedTime; // offset timer by work done
@@ -101,7 +98,7 @@ void startSystem() {
   }
 }
 
-// stopSystem freezes the timer and drops power to every actuator.
+// stopSystem freezes the timer and drops power to every actuator
 void stopSystem() {
   if (processRunning) {
     pausedElapsedTime = millis() - stepStartTime; // capture time spent so far
@@ -180,11 +177,11 @@ void applyStep(byte idx) {
       pressMotor.run(RELEASE);           // release pressure motor
       break;
     case 13:
-      digitalWrite(RELAY_PIN, HIGH);     // energize relay coil
+      digitalWrite(RELAY_PIN, HIGH);     // give power to relay 
       Serial.println("Relay on.");
       break;
     case 14:
-      digitalWrite(RELAY_PIN, LOW);      // drop relay coil
+      digitalWrite(RELAY_PIN, LOW);      // drop relay
       Serial.println("Relay off.");
       break;
     default:
@@ -200,5 +197,5 @@ void stopAllActuators() {
   peristalticPumpMotor.run(RELEASE);    // peristaltic pump off
   impellerMotor.run(RELEASE);           // impeller off
   pressMotor.run(RELEASE);              // press motor off
-  digitalWrite(RELAY_PIN, LOW);         // relay coil de-energized
+  digitalWrite(RELAY_PIN, LOW);         // relay cut off from power
 }
