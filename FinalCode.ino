@@ -64,39 +64,39 @@ void startStepActions(int step) {
   stepStartTime = millis();  // Remember when this step kicked off
 
   if (step == 0) {
-    Serial.println("Diaphragm pump ON");
+    Serial.println("Stage 1: Diaphragm pump ON");
     diaphragmPump.setSpeed(255);
     diaphragmPump.run(FORWARD);
   } else if (step == 1) {
-    Serial.println("Pause 1");
+    Serial.println("Stage 2: Pause before peristaltic pump");
     stopEverything();
   } else if (step == 2) {
-    Serial.println("Peristaltic pump ON");
+    Serial.println("Stage 3: Peristaltic pump ON");
     peristalticPump.setSpeed(255);
     peristalticPump.run(FORWARD);
   } else if (step == 3) {
-    Serial.println("Pause 2");
+    Serial.println("Stage 4: Pause before impeller");
     stopEverything();
   } else if (step == 4) {
-    Serial.println("Impeller FAST");
+    Serial.println("Stage 5: Impeller FAST");
     impeller.setSpeed(180);
     impeller.run(FORWARD);
   } else if (step == 5) {
-    Serial.println("Impeller SLOW");
+    Serial.println("Stage 6: Impeller SLOW");
     impeller.setSpeed(100);
     impeller.run(FORWARD);
   } else if (step == 6) {
-    Serial.println("Pause 3");
+    Serial.println("Stage 7: Pause before press motor");
     stopEverything();
   } else if (step == 7) {
-    Serial.println("Press motor ON");
+    Serial.println("Stage 8: Press motor ON");
     pressMotor.setSpeed(180);
     pressMotor.run(FORWARD);
   } else if (step == 8) {
-    Serial.println("Pause 4");
+    Serial.println("Stage 9: Pause before sub pump");
     stopEverything();
   } else if (step == 9) {
-    Serial.println("Horizontal sub pump ON");
+    Serial.println("Stage 10: Horizontal sub pump ON");
     digitalWrite(RELAY_PIN, HIGH);  // Relay energizes the pump
   }
 }
